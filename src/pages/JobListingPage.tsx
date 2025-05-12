@@ -1,9 +1,28 @@
-import React from 'react'
+import { getJobs } from "@/api/apiJobs";
+import { useSession } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 const JobListingPage = () => {
-  return (
-    <div>JobListingPage</div>
-  )
-}
+  const { session } = useSession();
 
-export default JobListingPage
+  const fetchJobs = async () => {
+    try {
+      const supabaseToken = await session?.getToken({
+        template: "supabase",
+      });
+      if (!supabaseToken) {
+        throw new Error("No token found");
+      }
+
+      const data = await getJobs(supabaseToken, {});
+      console.log(data);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+  return <div>JobListingPage</div>;
+};
+
+export default JobListingPage;
