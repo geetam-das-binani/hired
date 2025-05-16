@@ -27,11 +27,11 @@ const OnBoardingPage = () => {
   };
   if (!isLoaded) {
     return (
-      <BarLoader
-        className="mb-4 w-full text-center"
-        width={100}
-        color="#36d7b7"
-      />
+       <BarLoader
+            className="mb-4  text-center"
+            width={"100%"}
+            color="#36d7b7"
+          />
     );
   }
 
