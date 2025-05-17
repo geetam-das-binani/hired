@@ -18,6 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { applyToJob } from "@/api/apiApplications";
 import useFetch from "@/hooks/useFetch";
+import { BarLoader } from "react-spinners";
 const jobApplySchema = z.object({
   experience: z
     .number()
@@ -62,6 +63,21 @@ const ApplyJobDrawer = ({ applied, fetchJob, user, job }: JobProps) => {
     fn: fnApply,
     error: errorApply,
   } = useFetch(applyToJob, {});
+
+  const onSubmit = (data: jobType) => {
+    
+    fnApply({
+      ...data,
+      job_id: job?.id,
+      name: user?.fullName,
+      candidate_id: user?.id,
+      status: "applied",
+      resume: data.resume[0],
+    }).then(() => {
+      fetchJob();
+      reset();
+    });
+  };
   return (
     <Drawer open={applied ? false : undefined}>
       <DrawerTrigger>
@@ -81,14 +97,14 @@ const ApplyJobDrawer = ({ applied, fetchJob, user, job }: JobProps) => {
         </DrawerHeader>
 
         <form
-          onSubmit={}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col p-4 pb-0 space-y-2"
         >
           <Input
             type="number"
             placeholder="Years of Experience"
             className="flex-1"
-            {...register("education", { valueAsNumber: true })}
+            {...register("experience", { valueAsNumber: true })}
           />
           {errors?.["experience"] && (
             <p className="text-red-500">{errors["experience"].message}</p>
@@ -128,13 +144,16 @@ const ApplyJobDrawer = ({ applied, fetchJob, user, job }: JobProps) => {
 
           <Input
             type="file"
-            accept=".pdf ,. doc, .docx"
+            accept=".pdf,.doc,.docx"
             className="flex-1 file:text-gray-500"
             {...register("resume")}
           />
+
           {errors?.["resume"] && (
             <p className="text-red-500">{errors["resume"].message}</p>
           )}
+          {errorApply && <p className="text-red-500">{errorApply}</p>}
+          {loadingApply && <BarLoader width={"100%"} color="#36d7b7" />}
           <Button variant="blue" size="lg" type="submit">
             Apply
           </Button>
