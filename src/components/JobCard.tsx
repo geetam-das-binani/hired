@@ -10,11 +10,14 @@ import {
 import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { BarLoader } from "react-spinners";
 
 type JobCardProps = SingleJobType & {
   isMyJob?: boolean;
   savedInit?: boolean;
-  onJobSaved?: (jobId: number,isSaved?:boolean) => void;
+  onJobSaved?: (jobId: number, isSaved?: boolean) => void;
+  handleDelete?: (jobId: number) => void;
+  loadingDelete?: boolean;
 };
 
 const JobCard = ({
@@ -26,13 +29,21 @@ const JobCard = ({
   isMyJob = false,
   savedInit = false,
   onJobSaved = () => {},
+  handleDelete = () => {},
+  loadingDelete = false,
 }: JobCardProps) => {
   return (
     <Card className="flex flex-col">
+      {loadingDelete && <BarLoader width={"100%"} color="#36d7b7" />}
       <CardHeader>
         <CardTitle className="flex justify-between font-bold">
           {title}
-          {isMyJob && <Trash2Icon className="text-red-300 cursor-pointer" />}
+          {isMyJob && (
+            <Trash2Icon
+              onClick={() => handleDelete(id!)}
+              className="text-red-300 cursor-pointer"
+            />
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 flex-1">
@@ -56,7 +67,7 @@ const JobCard = ({
         <Heart
           onClick={() => {
             if (!id) return;
-            onJobSaved(id,savedInit);
+            onJobSaved(id!, savedInit);
           }}
           size={20}
           stroke="

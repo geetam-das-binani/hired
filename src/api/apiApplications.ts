@@ -57,7 +57,7 @@ export async function addNewJob(
   token: string,
   options: any,
   jobData: SingleJobType
-):Promise<SingleJobType[] | null> {
+): Promise<SingleJobType[] | null> {
   const supabase = await supabaseClient(token);
 
   const { data, error } = await supabase
@@ -67,6 +67,23 @@ export async function addNewJob(
 
   if (error || !data) {
     console.error("Error adding jobs", error);
+    return null;
+  }
+  return data;
+}
+
+export async function getApplications(
+  token: string,
+  { user_id }: { user_id: string }
+): Promise<ApplicationType[] | null> {
+  const supabase = await supabaseClient(token);
+
+  const { data, error } = await supabase
+    .from("applications")
+    .select("* , job:jobs(title,company:companies(name))")
+    .eq("candidate_id", user_id);
+  if (error || !data) {
+    console.error("Error updating application status", error);
     return null;
   }
   return data;

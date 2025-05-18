@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import ApplyJobDrawer from "@/components/ApplyJobDrawer";
 import ApplicationCard from "@/components/ApplicationCard";
-import type { ApplicationType } from "@/types/type";
+
 const JobPage = () => {
   const { user, isLoaded } = useUser();
   const { id: job_id } = useParams();
@@ -58,7 +58,7 @@ const JobPage = () => {
         <h1 className="text-gray-300 font-extrabold pb-3 text-4xl sm:text-6xl">
           {job?.title}
         </h1>
-        <img src={job?.company.logo_url} alt={job?.title} className="h-12" />
+        <img src={job?.company?.logo_url} alt={job?.title} className="h-12" />
       </div>
       <div className="flex justify-between">
         <div className="flex gap-2">
@@ -116,7 +116,7 @@ const JobPage = () => {
           job={job}
           user={user}
           fetchJob={fn}
-          applied={job?.applications.find(
+          applied={job?.applications?.find(
             (application) => application.candidate_id === user?.id
           )}
         />

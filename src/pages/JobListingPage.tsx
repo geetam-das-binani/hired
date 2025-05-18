@@ -1,5 +1,5 @@
 import { getCompanies } from "@/api/apiCompanies";
-import { deleteJob, getJobs, saveJob } from "@/api/apiJobs";
+import { deleteJob, deleteMyJob, getJobs, saveJob } from "@/api/apiJobs";
 import JobCard from "@/components/JobCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,13 @@ const JobListingPage = () => {
 
   const { fn: saveJobFn } = useFetch(saveJob, {});
   const { fn: deleteJobFn } = useFetch(deleteJob, {});
+  const {
+    loading: loadingDelete,
+
+    fn: deleteFn,
+  } = useFetch(deleteMyJob, {
+    user_id: user?.id,
+  });
   useEffect(() => {
     if (isLoaded) fn();
   }, [isLoaded, location, company_id, searchQuery]);
@@ -60,8 +67,7 @@ const JobListingPage = () => {
     query ? setSearchQuery(query) : setSearchQuery("");
   };
 
-  const handleJobSave = (jobId: number, isSaved: boolean) => {
-    console.log(isSaved)
+  const handleJobSave = (jobId: number, isSaved: boolean | undefined) => {
     !isSaved
       ? saveJobFn({ job_id: jobId.toString(), user_id: user?.id }).then(() => {
           fn();
@@ -71,6 +77,12 @@ const JobListingPage = () => {
             fn();
           }
         );
+  };
+
+  const handleDelete = (jobId: number) => {
+    deleteFn({ user_id: user?.id, job_id: jobId.toString() }).then(() => {
+      fn({ user_id: user?.id });
+    });
   };
 
   return (
@@ -171,6 +183,8 @@ const JobListingPage = () => {
                 key={job.id}
                 {...job}
                 onJobSaved={handleJobSave}
+                loadingDelete={loadingDelete}
+                handleDelete={handleDelete}
               />
             ))
           ) : (
