@@ -18,6 +18,10 @@ const CreateApplications = () => {
     return <BarLoader width={"100%"} color="#36d7b7" />;
   }
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex flex-col space-y-4">
       {data?.map((application) => (

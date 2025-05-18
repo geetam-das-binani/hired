@@ -4,7 +4,7 @@ import supabaseClient from "@/utils/supabase";
 export async function getJobs(
   token: string,
   { location, company_id, searchQuery }: Jobs,
-  ...args: any[]
+  ..._args: any[]
 ): Promise<SingleJobType[] | []> {
   const supabase = await supabaseClient(token);
   let query = supabase
@@ -67,7 +67,7 @@ export async function updateHiringStatus(
 
 export async function saveJob(
   token: string,
-  options: {},
+  _options: {},
   { job_id, user_id }: { job_id: string; user_id: string }
 ) {
   const supabase = await supabaseClient(token);
@@ -84,7 +84,7 @@ export async function saveJob(
 
 export async function deleteJob(
   token: string,
-  options: {},
+  _options: {},
   { job_id, user_id }: { job_id: string; user_id: string }
 ) {
   const supabase = await supabaseClient(token);
@@ -94,6 +94,8 @@ export async function deleteJob(
     .select("*")
     .eq("job_id", job_id)
     .eq("user_id", user_id);
+
+    console.log(existing)
 
   const { data, error } = await supabase
     .from("saved_jobs")
@@ -148,7 +150,7 @@ export async function getMyJobs(
 
 export async function deleteMyJob(
   token: string,
-  options: any,
+  _options: any,
   { job_id, user_id }: { job_id: string; user_id: string }
 ) {
   const supabase = await supabaseClient(token);

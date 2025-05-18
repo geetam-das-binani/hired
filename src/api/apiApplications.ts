@@ -3,7 +3,7 @@ import supabaseClient, { supabaseUrl } from "@/utils/supabase";
 
 export async function applyToJob(
   token: string,
-  options: any,
+  _options: any,
   jobData: ApplicationType
 ): Promise<ApplicationType[] | null> {
   const supabase = await supabaseClient(token);
@@ -55,7 +55,7 @@ export async function updateApplicationStatus(
 
 export async function addNewJob(
   token: string,
-  options: any,
+  _options: any,
   jobData: SingleJobType
 ): Promise<SingleJobType[] | null> {
   const supabase = await supabaseClient(token);

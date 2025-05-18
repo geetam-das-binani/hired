@@ -66,7 +66,7 @@ const JobPage = () => {
           {job?.location}
         </div>
         <div className="flex gap-x-24">
-          <Briefcase /> {job?.applications.length} Applicants
+          <Briefcase /> {job?.applications?.length} Applicants
         </div>
         <div className="flex gap-x-24">
           {job?.isOpen ? (

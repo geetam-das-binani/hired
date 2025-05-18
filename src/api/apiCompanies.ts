@@ -12,7 +12,7 @@ export async function getCompanies(token: string, ...args: any[]) {
 
 export async function addCompany(
   token: string,
-  options: any,
+  _options: any,
   companyData: { name: string; logo: string }
 ) {
   const supabase = await supabaseClient(token);
