@@ -48,7 +48,7 @@ const SavedJobsPage = () => {
               />
             ))
           ) : (
-            <div>No saved jobs found eye 👁️👁️</div>
+            <div>No saved jobs found  👁️👁️</div>
           )}
         </div>
       )}
