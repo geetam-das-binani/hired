@@ -57,12 +57,14 @@ export async function addNewJob(
   token: string,
   options: any,
   jobData: SingleJobType
-) {
+):Promise<SingleJobType[] | null> {
   const supabase = await supabaseClient(token);
 
-  const { data, error } = await supabase.from("jobs")
-  .insert({...jobData})
-    
+  const { data, error } = await supabase
+    .from("jobs")
+    .insert([jobData])
+    .select();
+
   if (error || !data) {
     console.error("Error adding jobs", error);
     return null;

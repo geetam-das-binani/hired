@@ -1,5 +1,5 @@
 import { getCompanies } from "@/api/apiCompanies";
-import { getJobs } from "@/api/apiJobs";
+import { deleteJob, getJobs, saveJob } from "@/api/apiJobs";
 import JobCard from "@/components/JobCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,8 @@ const JobListingPage = () => {
     {}
   );
 
+  const { fn: saveJobFn } = useFetch(saveJob, {});
+  const { fn: deleteJobFn } = useFetch(deleteJob, {});
   useEffect(() => {
     if (isLoaded) fn();
   }, [isLoaded, location, company_id, searchQuery]);
@@ -50,8 +52,6 @@ const JobListingPage = () => {
     return <div>Error: {error}</div>;
   }
 
-  console.log(companiesData);
-
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -59,6 +59,20 @@ const JobListingPage = () => {
     query = query.trim();
     query ? setSearchQuery(query) : setSearchQuery("");
   };
+
+  const handleJobSave = (jobId: number, isSaved: boolean) => {
+    console.log(isSaved)
+    !isSaved
+      ? saveJobFn({ job_id: jobId.toString(), user_id: user?.id }).then(() => {
+          fn();
+        })
+      : deleteJobFn({ job_id: jobId.toString(), user_id: user?.id }).then(
+          () => {
+            fn();
+          }
+        );
+  };
+
   return (
     <div>
       <h1 className="text-gray-300 font-extrabold text-6xl sm:text-7xl text-center pb-8">
@@ -144,16 +158,19 @@ const JobListingPage = () => {
           {data?.length ? (
             data.map((job: SingleJobType) => (
               <JobCard
-                isMyJob={job.recruiter_id === user?.id}
+                isMyJob={job.recruiter_id.toString() === user?.id.toString()}
                 savedInit={
                   job.saved &&
                   job.saved.length > 0 &&
-                  job.saved.find((saved) => saved.userId === user?.id)
+                  job.saved.find(
+                    (saved) => saved.user_id.toString() === user?.id.toString()
+                  )
                     ? true
                     : false
                 }
                 key={job.id}
                 {...job}
+                onJobSaved={handleJobSave}
               />
             ))
           ) : (

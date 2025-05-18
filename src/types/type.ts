@@ -19,7 +19,7 @@ export type SingleJobType = {
     name: string;
     logo_url: string;
   };
-  saved?: Array<{ id: number }>;
+  saved?: Array<{ id: number; user_id: string }>;
   applications?: Array<{
     id: number;
     user_id: string;
@@ -55,4 +55,17 @@ export type ApplicationType = {
   status: string;
   candidate_id: string;
   job?: SingleJobType;
+};
+
+export type SavedJobType = {
+  id: number;
+  user_id: string;
+  job_id: number;
+  created_at: Date;
+  job: SingleJobType & {
+    company: {
+      name: string;
+      logo_url: string;
+    };
+  };
 };

@@ -28,7 +28,6 @@ const useFetch = <TResponse>(
 
       const response = await cb(supabaseToken, options, ...args);
 
-     
       setData(response);
     } catch (error: any) {
       setError(error.message || "Something went wrong");

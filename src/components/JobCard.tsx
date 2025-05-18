@@ -1,5 +1,5 @@
 import type { SingleJobType } from "@/types/type";
-import { useUser } from "@clerk/clerk-react";
+
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 type JobCardProps = SingleJobType & {
   isMyJob?: boolean;
   savedInit?: boolean;
-  onJobSaved?: (jobId:number) => void;
+  onJobSaved?: (jobId: number,isSaved?:boolean) => void;
 };
 
 const JobCard = ({
@@ -22,17 +22,11 @@ const JobCard = ({
   title,
   description,
   location,
-  company_id,
-  requirements,
-  isOpen,
-  created_at,
-  recruiter_id,
   company,
   isMyJob = false,
   savedInit = false,
   onJobSaved = () => {},
 }: JobCardProps) => {
-  const { user } = useUser();
   return (
     <Card className="flex flex-col">
       <CardHeader>
@@ -60,10 +54,16 @@ const JobCard = ({
           </Button>
         </Link>
         <Heart
+          onClick={() => {
+            if (!id) return;
+            onJobSaved(id,savedInit);
+          }}
           size={20}
           stroke="
+          
         red"
-          fill="red"
+          className="cursor-pointer"
+          fill={savedInit ? "red" : ""}
         />
       </CardFooter>
     </Card>

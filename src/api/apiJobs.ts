@@ -9,7 +9,7 @@ export async function getJobs(
   const supabase = await supabaseClient(token);
   let query = supabase
     .from("jobs")
-    .select("*, company:companies(name,logo_url),saved:saved_jobs(id)");
+    .select("*, company:companies(name,logo_url),saved:saved_jobs(user_id,id)");
   if (location) {
     query = query.eq("location", location);
   }
@@ -60,6 +60,69 @@ export async function updateHiringStatus(
     .single();
   if (error || !data) {
     console.error("Error updating job status", error);
+    return null;
+  }
+  return data;
+}
+
+export async function saveJob(
+  token: string,
+  options: {},
+  { job_id, user_id }: { job_id: string; user_id: string }
+) {
+  const supabase = await supabaseClient(token);
+  const { data, error } = await supabase
+    .from("saved_jobs")
+    .insert([{ job_id, user_id }])
+    .select();
+  if (error || !data) {
+    console.error("Error saving jobs", error);
+    return null;
+  }
+  return data;
+}
+
+export async function deleteJob(
+  token: string,
+  options: {},
+  { job_id, user_id }: { job_id: string; user_id: string }
+) {
+  const supabase = await supabaseClient(token);
+
+  const { data: existing } = await supabase
+    .from("saved_jobs")
+    .select("*")
+    .eq("job_id", job_id)
+    .eq("user_id", user_id);
+
+  const { data, error } = await supabase
+    .from("saved_jobs")
+    .delete()
+    .eq("job_id", job_id)
+    .eq("user_id", user_id)
+    .select();
+
+  if (error || !data) {
+    console.error("Delete error:", error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getSavedJobs(
+  token: string,
+  options: {
+    user_id: string;
+  }
+) {
+  const supabase = await supabaseClient(token);
+  const { data, error } = await supabase
+    .from("saved_jobs")
+    .select("* , job:jobs(*,company:companies(name,logo_url))")
+    .eq("user_id", options.user_id);
+  if (error || !data) {
+    console.error("Error fetching saving jobs", error);
     return null;
   }
   return data;
