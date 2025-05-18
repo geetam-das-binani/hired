@@ -1,6 +1,6 @@
 import supabaseClient, { supabaseUrl } from "@/utils/supabase";
 
-export async function getCompanies(token: string, ...args: any[]) {
+export async function getCompanies(token: string, ..._args: any[]) {
   const supabase = await supabaseClient(token);
   const { data, error } = await supabase.from("companies").select("*");
   if (error || !data) {
